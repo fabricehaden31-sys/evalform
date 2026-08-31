@@ -1,9 +1,10 @@
 ﻿from django.contrib.auth import login, logout
 from django.db.models import Avg, Count, Q
 from rest_framework import generics, permissions, response, status, views, viewsets
+from rest_framework.decorators import action
 
 from .models import Formulaire
-from .serializers import ConnexionSerializer, EvaluationSerializer, EvaluationSoumissionSerializer, FormulaireSerializer
+from .serializers import ConnexionSerializer, EvaluationDetailSerializer, EvaluationSerializer, EvaluationSoumissionSerializer, FormulaireSerializer
 
 
 class IsAdministrator(permissions.BasePermission):
@@ -65,6 +66,17 @@ class FormulaireAdminViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdministrator]
     serializer_class = FormulaireSerializer
     queryset = Formulaire.objects.all().prefetch_related('questions')
+
+    @action(detail=True, methods=['get'], url_path='reponses')
+    def reponses(self, request, pk=None):
+        formulaire = self.get_object()
+        evaluations = (
+            formulaire.evaluations
+            .prefetch_related('reponses__question')
+            .order_by('-date_soumission')
+        )
+        serializer = EvaluationDetailSerializer(evaluations, many=True)
+        return response.Response(serializer.data)
 
 
 class TableauDeBordView(views.APIView):

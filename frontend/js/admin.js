@@ -12,6 +12,8 @@ const createForm = document.querySelector('#createForm');
 const trainersContainer = document.querySelector('#trainersContainer');
 const questionsContainer = document.querySelector('#questionsContainer');
 const formError = document.querySelector('#formError');
+const responseFormSelect = document.querySelector('#responseFormSelect');
+const responsesList = document.querySelector('#responsesList');
 
 function escapeHtml(value) {
   return String(value || '')
@@ -54,6 +56,89 @@ function renderForms(forms) {
       </article>
     `;
   }).join('');
+}
+
+function populateFormSelect(forms) {
+  const currentValue = responseFormSelect.value;
+  responseFormSelect.innerHTML = '';
+
+  if (!forms.length) {
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = 'Aucun formulaire disponible';
+    option.disabled = true;
+    responseFormSelect.appendChild(option);
+    responsesList.innerHTML = '<p class="empty-state">Créez un formulaire pour collecter des réponses.</p>';
+    return;
+  }
+
+  forms.forEach((form) => {
+    const option = document.createElement('option');
+    option.value = form.id;
+    option.textContent = `${form.titre || 'Sans titre'} (${form.nombre_evaluations ?? 0} réponse${(form.nombre_evaluations ?? 0) > 1 ? 's' : ''})`;
+    responseFormSelect.appendChild(option);
+  });
+
+  const exists = forms.some((form) => String(form.id) === currentValue);
+  if (exists) {
+    responseFormSelect.value = currentValue;
+  }
+  loadResponses(responseFormSelect.value);
+}
+
+function formatReponseValue(reponse) {
+  if (reponse.question_type === 'echelle_satisfaction') {
+    return reponse.valeur_numerique != null ? `${reponse.valeur_numerique} / 5` : '—';
+  }
+  return reponse.valeur_texte || '—';
+}
+
+function formatDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' });
+}
+
+function renderResponses(evaluations) {
+  if (!evaluations.length) {
+    responsesList.innerHTML = '<p class="empty-state">Aucune réponse pour ce formulaire pour le moment.</p>';
+    return;
+  }
+
+  responsesList.innerHTML = evaluations.map((evaluation, index) => {
+    const reponses = [...(evaluation.reponses || [])].sort((a, b) => (a.question_ordre ?? 0) - (b.question_ordre ?? 0));
+    const rows = reponses.map((reponse) => `
+      <li>
+        <span class="response-question">${escapeHtml(reponse.question_libelle || 'Question sans intitulé')}</span>
+        <span class="response-value">${escapeHtml(formatReponseValue(reponse))}</span>
+      </li>
+    `).join('');
+    const score = evaluation.score_global != null ? `${Math.round(evaluation.score_global)}%` : '—';
+    return `
+      <article class="response-card">
+        <header>
+          <b>Réponse n°${evaluations.length - index}</b>
+          <span>Soumise le ${escapeHtml(formatDate(evaluation.date_soumission))} · Satisfaction : ${score}</span>
+        </header>
+        <ul>${rows}</ul>
+      </article>
+    `;
+  }).join('');
+}
+
+async function loadResponses(formId) {
+  if (!formId) {
+    responsesList.innerHTML = '<p class="empty-state">Sélectionnez un formulaire pour afficher les réponses.</p>';
+    return;
+  }
+  responsesList.innerHTML = '<p class="empty-state">Chargement des réponses…</p>';
+  try {
+    const evaluations = await apiRequest(`/administration/formulaires/${encodeURIComponent(formId)}/reponses/`);
+    renderResponses(evaluations);
+  } catch (error) {
+    responsesList.innerHTML = `<p class="empty-state">${escapeHtml(error.message)}</p>`;
+  }
 }
 
 function addTrainerRow(value = '') {
@@ -170,6 +255,7 @@ async function refreshDashboard() {
     ]);
     renderForms(forms);
     updateMetrics(dashboard);
+    populateFormSelect(forms);
   } catch (error) {
     formsList.innerHTML = `<p class="empty-state">${escapeHtml(error.message)} Lancez le serveur Django pour charger les formulaires.</p>`;
   }
@@ -178,6 +264,10 @@ async function refreshDashboard() {
 document.querySelector('#newFormButton').addEventListener('click', () => {
   resetBuilder();
   dialog.showModal();
+});
+
+responseFormSelect.addEventListener('change', () => {
+  loadResponses(responseFormSelect.value);
 });
 
 document.querySelector('#addTrainerButton').addEventListener('click', () => addTrainerRow());

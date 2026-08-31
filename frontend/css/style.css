@@ -132,3 +132,19 @@ select { background:#fff; border:1px solid #d8d8d8; border-radius:8px; font:inhe
 .picker-item h3 { font-size:1.05rem; margin:0 0 6px; }
 .picker-item p { color:var(--muted); font-size:.82rem; margin:0; }
 @media (max-width:780px) { .question-meta,.dynamic-row { grid-template-columns:1fr; display:grid; } }
+
+/* Réponses des apprenants (admin). */
+.response-picker { display:block; font-size:.86rem; font-weight:700; margin-top:20px; max-width:440px; }
+.response-picker select { margin-top:8px; }
+.responses-list { display:grid; gap:16px; margin-top:23px; }
+.responses-list .empty-state { background:var(--paper); border:1px solid #e4e9e4; border-radius:10px; }
+.response-card { background:var(--paper); border:1px solid #e4e9e4; border-radius:10px; padding:20px 22px; }
+.response-card header { align-items:baseline; display:flex; flex-wrap:wrap; gap:6px 14px; margin-bottom:14px; }
+.response-card header b { font-size:.95rem; }
+.response-card header span { color:var(--muted); font-size:.78rem; }
+.response-card ul { display:grid; gap:0; list-style:none; margin:0; padding:0; }
+.response-card li { border-top:1px solid var(--line); display:flex; gap:18px; justify-content:space-between; padding:11px 2px; }
+.response-card li:first-child { border-top:0; }
+.response-question { color:var(--ink); font-size:.85rem; }
+.response-value { color:#478c64; font-size:.85rem; font-weight:700; text-align:right; white-space:pre-wrap; }
+@media (max-width:780px) { .response-card li { flex-direction:column; gap:4px; } .response-value { text-align:left; } }

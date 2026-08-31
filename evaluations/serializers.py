@@ -156,6 +156,24 @@ class EvaluationSerializer(serializers.ModelSerializer):
         fields = ('id', 'formulaire', 'date_soumission', 'score_global', 'statut')
 
 
+class ReponseDetailSerializer(serializers.ModelSerializer):
+    question_libelle = serializers.CharField(source='question.libelle', read_only=True)
+    question_type = serializers.CharField(source='question.type_reponse', read_only=True)
+    question_ordre = serializers.IntegerField(source='question.ordre', read_only=True)
+
+    class Meta:
+        model = Reponse
+        fields = ('question', 'question_libelle', 'question_type', 'question_ordre', 'valeur_numerique', 'valeur_texte')
+
+
+class EvaluationDetailSerializer(serializers.ModelSerializer):
+    reponses = ReponseDetailSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Evaluation
+        fields = ('id', 'date_soumission', 'score_global', 'statut', 'reponses')
+
+
 class ConnexionSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True, trim_whitespace=False)

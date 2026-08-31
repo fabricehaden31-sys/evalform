@@ -73,11 +73,19 @@
     <section class="dashboard-section" id="resultats">
       <div class="section-heading">
         <div>
-          <h2>Lien apprenant</h2>
-          <p>Partagez la page d’évaluation pour collecter les avis.</p>
+          <h2>Réponses de l’apprenant</h2>
+          <p>Consultez les réponses soumises pour chaque formulaire.</p>
         </div>
       </div>
-      <p class="dashboard-note">Chaque formulaire dispose d’un lien « Voir » qui ouvre la fiche d’évaluation correspondante.</p>
+
+      <label class="response-picker">
+        Formulaire
+        <select id="responseFormSelect"></select>
+      </label>
+
+      <div class="responses-list" id="responsesList">
+        <p class="empty-state">Sélectionnez un formulaire pour afficher les réponses.</p>
+      </div>
     </section>
   </main>
 
