@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votre avis — BostonSolux Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="survey-page">
+  <header class="simple-header">
+    <a class="brand" href="index.html">
+      <span class="brand-logo">
+        <span>BostonSolux</span><b>Academy</b>
+        <small>Excellence in Training</small>
+      </span>
+    </a>
+    <span class="secure-note">Vos réponses sont confidentielles</span>
+  </header>
+
+  <main class="survey-wrap matrix-wrap">
+    <section class="survey-card matrix-card form-picker" id="formPicker" hidden>
+      <p class="eyebrow">Évaluation de formation</p>
+      <h1>Choisissez le formulaire à remplir.</h1>
+      <p class="survey-description">Sélectionnez la formation que vous venez de suivre.</p>
+      <div class="picker-list" id="pickerList"></div>
+    </section>
+
+    <form id="evaluationForm" class="survey-card matrix-card" hidden>
+      <p class="eyebrow" id="surveyCategory">Évaluation de formation</p>
+      <h1 id="surveyTitle">Votre avis compte pour nous.</h1>
+      <div class="training-info">
+        <p><b>Date :</b> <span id="surveyDate"></span></p>
+        <p><b>Lieu de la formation :</b> <span id="surveyLocation">—</span></p>
+        <p><b>Formateur(s) :</b> <span id="surveyTrainers">—</span></p>
+      </div>
+      <p class="survey-description" id="surveyDescription">Veuillez indiquer votre degré de satisfaction pour chacun des points ci-dessous.</p>
+      <section id="questionContainer" aria-live="polite"></section>
+      <p class="validation" id="validation"></p>
+      <div class="form-actions">
+        <a class="button button-ghost" href="evaluer.html">← Autre formulaire</a>
+        <button type="submit" class="button">Envoyer mon avis <span>→</span></button>
+      </div>
+    </form>
+    <p class="privacy-note">En répondant, vous contribuez à améliorer la qualité de nos formations.</p>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/evaluer.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord — BostonSolux Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dashboard-page">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">
+      <span class="brand-logo">
+        <span>BostonSolux</span><b>Academy</b>
+        <small>Excellence in Training</small>
+      </span>
+    </a>
+    <nav>
+      <a class="active" href="admin.html"><span>▦</span> Vue d'ensemble</a>
+      <a href="#formulaires"><span>▤</span> Formulaires</a>
+      <a href="#resultats"><span>◔</span> Résultats</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <a href="index.html"><span>⌂</span> Voir le site</a>
+      <button class="logout-link" id="logoutButton" type="button"><span>↩</span> Se déconnecter</button>
+      <div class="profile">
+        <span>AD</span>
+        <div>
+          <b id="adminName">Administrateur</b>
+          <small>Espace de gestion</small>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="dashboard-header">
+      <div>
+        <p class="eyebrow">Tableau de bord</p>
+        <h1>Bonjour <span id="adminGreeting">Admin</span> <span>👋</span></h1>
+        <p>Créez vos questionnaires de satisfaction et suivez les retours.</p>
+      </div>
+      <button class="button" id="newFormButton" type="button">+ Nouveau formulaire</button>
+    </header>
+
+    <section class="metrics" aria-label="Indicateurs clés">
+      <article>
+        <span>Évaluations reçues</span>
+        <strong id="metricEvaluations">0</strong>
+      </article>
+      <article>
+        <span>Satisfaction moyenne</span>
+        <strong id="metricSatisfaction">—</strong>
+      </article>
+      <article>
+        <span>Formulaires actifs</span>
+        <strong id="metricForms">0</strong>
+      </article>
+    </section>
+
+    <section class="dashboard-section" id="formulaires">
+      <div class="section-heading">
+        <div>
+          <h2>Vos formulaires</h2>
+          <p>Lieu, formateurs et questions de chaque formation.</p>
+        </div>
+      </div>
+      <div class="forms-list" id="formsList"></div>
+    </section>
+
+    <section class="dashboard-section" id="resultats">
+      <div class="section-heading">
+        <div>
+          <h2>Lien apprenant</h2>
+          <p>Partagez la page d’évaluation pour collecter les avis.</p>
+        </div>
+      </div>
+      <p class="dashboard-note">Chaque formulaire dispose d’un lien « Voir » qui ouvre la fiche d’évaluation correspondante.</p>
+    </section>
+  </main>
+
+  <dialog id="formDialog">
+    <form class="dialog-content dialog-wide" id="createForm">
+      <button class="dialog-close" type="button" id="closeDialog" aria-label="Fermer">×</button>
+      <p class="eyebrow">Nouveau formulaire</p>
+      <h2>Créez votre questionnaire</h2>
+
+      <label>Titre de la formation
+        <input id="formTitle" required placeholder="Ex. Formation Cybersécurité &amp; Réseaux">
+      </label>
+
+      <label>Catégorie
+        <input id="formCategory" placeholder="Ex. Informatique / Certifications">
+      </label>
+
+      <label>Lieu de la formation
+        <input id="formLocation" required placeholder="Ex. Lomé, Campus BostonSolux / En ligne">
+      </label>
+
+      <div class="builder-block">
+        <div class="builder-heading">
+          <h3>Formateur(s)</h3>
+          <button type="button" class="button button-ghost button-tiny" id="addTrainerButton">+ Ajouter un formateur</button>
+        </div>
+        <div id="trainersContainer"></div>
+      </div>
+
+      <div class="builder-block">
+        <div class="builder-heading">
+          <h3>Questions du formulaire</h3>
+          <button type="button" class="button button-ghost button-tiny" id="addQuestionButton">+ Ajouter une question</button>
+        </div>
+        <div id="questionsContainer"></div>
+      </div>
+
+      <p class="validation" id="formError" role="alert"></p>
+
+      <menu>
+        <button type="button" class="button button-ghost" id="cancelDialog">Annuler</button>
+        <button type="submit" class="button" id="saveFormButton">Créer le formulaire</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
