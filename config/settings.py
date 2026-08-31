@@ -26,10 +26,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-@t(3&4lxod6xu&l4ihge0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+_render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '')
+_allowed = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+if _render_host:
+    _allowed.append(_render_host)
+ALLOWED_HOSTS = _allowed
 
-_deploy_url = os.environ.get('RAILWAY_URL', '') or os.environ.get('RENDER_EXTERNAL_HOSTNAME', '')
-CSRF_TRUSTED_ORIGINS = [f'https://{_deploy_url}'] if _deploy_url else []
+CSRF_TRUSTED_ORIGINS = [f'https://{_render_host}'] if _render_host else []
 
 
 # Application definition
