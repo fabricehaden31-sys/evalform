@@ -100,13 +100,19 @@ function formatDate(value) {
   return date.toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' });
 }
 
-function renderResponses(evaluations) {
-  if (!evaluations.length) {
+const RESPONSES_PER_PAGE = 5;
+
+function renderResponses(data, page) {
+  const evaluations = data.results || [];
+  const total = data.count ?? 0;
+
+  if (!total) {
     responsesList.innerHTML = '<p class="empty-state">Aucune réponse pour ce formulaire pour le moment.</p>';
     return;
   }
 
-  responsesList.innerHTML = evaluations.map((evaluation, index) => {
+  const totalPages = Math.max(1, Math.ceil(total / RESPONSES_PER_PAGE));
+  const cards = evaluations.map((evaluation, index) => {
     const reponses = [...(evaluation.reponses || [])].sort((a, b) => (a.question_ordre ?? 0) - (b.question_ordre ?? 0));
     const rows = reponses.map((reponse) => `
       <li>
@@ -115,31 +121,50 @@ function renderResponses(evaluations) {
       </li>
     `).join('');
     const score = evaluation.score_global != null ? `${Math.round(evaluation.score_global)}%` : '—';
+    const numero = total - ((page - 1) * RESPONSES_PER_PAGE + index);
     return `
       <article class="response-card">
         <header>
-          <b>Réponse n°${evaluations.length - index}</b>
+          <b>Réponse n°${numero}</b>
           <span>Soumise le ${escapeHtml(formatDate(evaluation.date_soumission))} · Satisfaction : ${score}</span>
         </header>
         <ul>${rows}</ul>
       </article>
     `;
   }).join('');
+
+  const pagination = totalPages > 1 ? `
+    <nav class="responses-pagination" aria-label="Pagination des réponses">
+      <button type="button" data-page="${page - 1}" ${page <= 1 ? 'disabled' : ''}>← Précédent</button>
+      <span>Page ${page} sur ${totalPages} · ${total} réponse${total > 1 ? 's' : ''}</span>
+      <button type="button" data-page="${page + 1}" ${page >= totalPages ? 'disabled' : ''}>Suivant →</button>
+    </nav>
+  ` : '';
+
+  responsesList.innerHTML = cards + pagination;
 }
 
-async function loadResponses(formId) {
+async function loadResponses(formId, page = 1) {
   if (!formId) {
     responsesList.innerHTML = '<p class="empty-state">Sélectionnez un formulaire pour afficher les réponses.</p>';
     return;
   }
   responsesList.innerHTML = '<p class="empty-state">Chargement des réponses…</p>';
   try {
-    const evaluations = await apiRequest(`/administration/formulaires/${encodeURIComponent(formId)}/reponses/`);
-    renderResponses(evaluations);
+    const data = await apiRequest(
+      `/administration/formulaires/${encodeURIComponent(formId)}/reponses/?page=${page}&page_size=${RESPONSES_PER_PAGE}`,
+    );
+    renderResponses(data, page);
   } catch (error) {
     responsesList.innerHTML = `<p class="empty-state">${escapeHtml(error.message)}</p>`;
   }
 }
+
+responsesList.addEventListener('click', (event) => {
+  const button = event.target.closest('.responses-pagination button');
+  if (!button || button.disabled) return;
+  loadResponses(responseFormSelect.value, Number(button.dataset.page));
+});
 
 function addTrainerRow(value = '') {
   const row = document.createElement('div');

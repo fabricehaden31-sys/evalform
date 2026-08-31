@@ -2,6 +2,7 @@
 from django.db.models import Avg, Count, Q
 from rest_framework import generics, permissions, response, status, views, viewsets
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 
 from .models import Formulaire
 from .serializers import ConnexionSerializer, EvaluationDetailSerializer, EvaluationSerializer, EvaluationSoumissionSerializer, FormulaireSerializer
@@ -62,6 +63,12 @@ class SoumettreEvaluationView(views.APIView):
         return response.Response(EvaluationSerializer(evaluation).data, status=201)
 
 
+class ReponsesPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 50
+
+
 class FormulaireAdminViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdministrator]
     serializer_class = FormulaireSerializer
@@ -75,8 +82,10 @@ class FormulaireAdminViewSet(viewsets.ModelViewSet):
             .prefetch_related('reponses__question')
             .order_by('-date_soumission')
         )
-        serializer = EvaluationDetailSerializer(evaluations, many=True)
-        return response.Response(serializer.data)
+        paginator = ReponsesPagination()
+        page = paginator.paginate_queryset(evaluations, request)
+        serializer = EvaluationDetailSerializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class TableauDeBordView(views.APIView):

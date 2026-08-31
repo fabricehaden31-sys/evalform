@@ -147,4 +147,9 @@ select { background:#fff; border:1px solid #d8d8d8; border-radius:8px; font:inhe
 .response-card li:first-child { border-top:0; }
 .response-question { color:var(--ink); font-size:.85rem; }
 .response-value { color:#478c64; font-size:.85rem; font-weight:700; text-align:right; white-space:pre-wrap; }
+.responses-pagination { align-items:center; background:var(--paper); border:1px solid #e4e9e4; border-radius:10px; display:flex; flex-wrap:wrap; gap:14px; justify-content:center; padding:13px 18px; }
+.responses-pagination span { color:var(--muted); font-size:.8rem; }
+.responses-pagination button { background:#fff; border:1px solid #d8d8d8; border-radius:8px; cursor:pointer; font:inherit; font-size:.8rem; font-weight:700; padding:8px 14px; }
+.responses-pagination button:hover:not(:disabled) { border-color:#478c64; color:#478c64; }
+.responses-pagination button:disabled { cursor:default; opacity:.45; }
 @media (max-width:780px) { .response-card li { flex-direction:column; gap:4px; } .response-value { text-align:left; } }
