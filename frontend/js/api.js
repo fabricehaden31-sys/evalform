@@ -9,12 +9,12 @@ function getCsrfToken() {
 }
 
 function apiErrorMessage(data) {
-  if (!data || typeof data !== 'object') return 'La requête n'a pas pu aboutir.';
+  if (!data || typeof data !== 'object') return "La requête n'a pas pu aboutir.";
   if (typeof data.detail === 'string') return data.detail;
   if (Array.isArray(data.non_field_errors)) return data.non_field_errors[0];
   const first = Object.values(data).find((value) => Array.isArray(value) && value.length);
   if (first) return first[0];
-  return 'La requête n'a pas pu aboutir.';
+  return "La requête n'a pas pu aboutir.";
 }
 
 async function apiRequest(path, options = {}) {
