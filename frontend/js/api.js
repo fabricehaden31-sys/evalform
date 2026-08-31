@@ -1,6 +1,4 @@
-const API_BASE_URL = window.location.origin.includes(‘:8000’)
-  ? `${window.location.origin}/api`
-  : ‘http://127.0.0.1:8000/api’;
+const API_BASE_URL = `${window.location.origin}/api`;
 
 const AUTH_STORAGE_KEY = ‘evalform_role’;
 const USER_STORAGE_KEY = ‘evalform_username’;
